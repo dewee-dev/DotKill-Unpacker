@@ -1,9 +1,43 @@
-Run actions/upload-release-asset@v1
-  with:
-    upload_url: https://api.github.com/repos/dewee-dev/DotKill-Unpacker/releases{/id}
-    asset_path: DotKill-Unpacker-4.zip
-    asset_name: DotKill-Unpacker-4.zip
-    asset_content_type: application/zip
-  env:
-    GITHUB_TOKEN: ***
-Error: ENOENT: no such file or directory, stat 'D:\a\DotKill-Unpacker\DotKill-Unpacker\DotKill-Unpacker-4.zip'
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Restore NuGet packages
+      run: nuget restore DotKill.sln
+    - name: Build
+      run: msbuild DotKill.sln /p:Configuration=Release
+    - name: Create Package Directory
+      run: mkdir out
+    - name: Copy Build Output
+      run: Copy-Item -Path "./DotKill/bin/Release/*" -Destination "./out" -Recurse -Force
+    - name: Zip Package
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: DotKill-Unpacker-${{ github.run_number }}.zip
+        directory: out
+    - name: List files in workspace
+      run: Get-ChildItem -Force
+    - name: Change working directory to root
+      run: cd $GITHUB_WORKSPACE
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.repository.releases_url }}
+        asset_path: DotKill-Unpacker-${{ github.run_number }}.zip
+        asset_name: DotKill-Unpacker-${{ github.run_number }}.zip
+        asset_content_type: application/zip 
