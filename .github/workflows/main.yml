@@ -32,11 +32,11 @@ jobs:
       run: Get-ChildItem -Force
     - name: Change working directory to root
       run: cd $GITHUB_WORKSPACE
-    - name: List files before Create Release
-      run: ls -al .github/actions/create-release
+    - name: Show current directory content
+      run: Get-ChildItem -Force
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
