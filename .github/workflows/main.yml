@@ -18,4 +18,22 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore DotKill.sln
     - name: Build
-      run: msbuild DotKill.sln /p:Configuration=Release 
+      run: msbuild DotKill.sln /p:Configuration=Release
+    - name: Create Package Directory
+      run: mkdir out
+    - name: Copy Build Output
+      run: Copy-Item -Path "./DotKill/bin/Release/*" -Destination "./out" -Recurse -Force
+    - name: Zip Package
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: DotKill-Unpacker-${{ github.run_number }}.zip
+        directory: out
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.repository.releases_url }}/tags/latest
+        asset_path: DotKill-Unpacker-${{ github.run_number }}.zip
+        asset_name: DotKill-Unpacker-${{ github.run_number }}.zip
+        asset_content_type: application/zip 
