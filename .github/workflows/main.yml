@@ -28,12 +28,14 @@ jobs:
       with:
         filename: DotKill-Unpacker-${{ github.run_number }}.zip
         directory: out
+    - name: List files in workspace
+      run: ls -al
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.repository.releases_url }}/tags/latest
+        upload_url: ${{ github.event.repository.releases_url }}
         asset_path: DotKill-Unpacker-${{ github.run_number }}.zip
         asset_name: DotKill-Unpacker-${{ github.run_number }}.zip
         asset_content_type: application/zip 
