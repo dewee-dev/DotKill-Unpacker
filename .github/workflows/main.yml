@@ -38,6 +38,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.repository.releases_url }}
-        asset_path: DotKill-Unpacker-${{ github.run_number }}.zip
+        asset_path: out/DotKill-Unpacker-${{ github.run_number }}.zip
         asset_name: DotKill-Unpacker-${{ github.run_number }}.zip
         asset_content_type: application/zip 
