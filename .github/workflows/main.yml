@@ -28,6 +28,11 @@ jobs:
       with:
         filename: DotKill-Unpacker-${{ github.run_number }}.zip
         directory: out
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DotKill-Unpacker-${{ github.run_number }}
+        path: out/DotKill-Unpacker-${{ github.run_number }}.zip
     - name: List files in workspace
       run: Get-ChildItem -Force
     - name: Change working directory to root
